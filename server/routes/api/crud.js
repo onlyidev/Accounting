@@ -13,7 +13,7 @@ class crud {
   }
 
   static async Read(conn, id) {
-    const item = await conn.find({ _id: mongodb.ObjectId(id) });
+    const item = await conn.find({ _id: mongodb.ObjectId(id) }).toArray();
     return item;
   }
 
@@ -39,6 +39,11 @@ class crud {
     return id;
   }
 
+  static async Find(conn, data) {
+    const item = await conn.find(data).toArray();
+    return item;
+  }
+
   static async handler(conn, data) {
     let result;
     switch (data.headers) {
@@ -57,10 +62,23 @@ class crud {
       case "readall":
         result = await this.ReadAll(conn);
         break;
+      case "find":
+        result = await this.Find(conn, data.body);
       default:
         break;
     }
     return result;
+  }
+
+  static async loadCollection(string) {
+    const client = await mongodb.MongoClient.connect(
+      "mongodb://acc:toor@db:27017/accounting",
+      {
+        useNewUrlParser: true,
+      }
+    );
+
+    return client.db("accounting").collection(string);
   }
 }
 

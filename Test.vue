@@ -4,13 +4,30 @@
     <p>{{ connected == -1 ? "dead" : "active" }}</p>
     <br />
     <div
-      class="border border-black rounded-md flex flex-col w-4/5 md:w-1/3 space-y-2 ml-auto mr-auto p-2"
+      class="
+        border border-black
+        rounded-md
+        flex flex-col
+        w-4/5
+        md:w-1/3
+        space-y-2
+        ml-auto
+        mr-auto
+        p-2
+      "
     >
       <div
         v-for="post in posts"
         :item="post"
         :key="post._id"
-        class="grid grid-cols-3 place-items-start gap-2 transition-all duration-300 ease-in"
+        class="
+          grid grid-cols-3
+          place-items-start
+          gap-2
+          transition-all
+          duration-300
+          ease-in
+        "
       >
         <span class="text-gray-500">
           {{
@@ -33,7 +50,14 @@
           "
         />
         <button
-          class="rounded-md bg-red-700 px-2 py-1 place-self-end text-center text-white"
+          class="
+            rounded-md
+            bg-red-700
+            px-2
+            py-1
+            place-self-end
+            text-center text-white
+          "
           @click="removePost(post._id)"
         >
           Delete
@@ -42,7 +66,15 @@
     </div>
     <br />
     <div
-      class="rounded-md border border-blue-800 w-4/5 md:w-1/3 mx-auto flex flex-col h-64"
+      class="
+        rounded-md
+        border border-blue-800
+        w-4/5
+        md:w-1/3
+        mx-auto
+        flex flex-col
+        h-64
+      "
     >
       <h1 class="font-bold text-3xl">Create a post!</h1>
       <textarea
@@ -51,7 +83,17 @@
         class="w-auto h-4/5 outline-none border border-blue-500 mx-2 rounded-md"
       ></textarea>
       <button
-        class="bg-green-600 px-3 py-2 w-auto rounded-md self-end my-3 mx-2 text-white"
+        class="
+          bg-green-600
+          px-3
+          py-2
+          w-auto
+          rounded-md
+          self-end
+          my-3
+          mx-2
+          text-white
+        "
         @click="
           createPost();
           text = '';
@@ -66,13 +108,9 @@
 <script setup>
 import { ref } from "vue";
 
-import { io } from "socket.io-client";
-
 const posts = ref([]);
 const text = ref("");
 const connected = ref(-1);
-
-const socket = io("http://localhost:5000", { transports: ["websocket"] });
 
 const editing = ref("");
 

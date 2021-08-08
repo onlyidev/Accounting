@@ -3,9 +3,10 @@
     class="
       rounded-md
       border border-white
-      h-32
+      h-36
+      max-h-full
       bg-gray-900
-      max-w-1/6
+      max-w-[30%]
       min-w-[15%]
       overflow-hidden
       cursor-pointer
@@ -15,7 +16,10 @@
     "
     :class="{ 'border-dashed active:scale-95': New }"
   >
-    <header class="text-bold text-lg shadow-lg rounded-md h-1/5" v-if="!New">
+    <header
+      class="text-bold text-lg text-center shadow-lg rounded-md h-1/5 truncate"
+      v-if="!New"
+    >
       {{ header }}
     </header>
     <main
@@ -26,18 +30,33 @@
     >
       <slot></slot>
     </main>
-    <footer class="h-1/5 shaodw-lg flex items-center text-white" v-if="!New">
-      <button class="bg-blue-700 w-1/2 h-4/5 mx-1 rounded-md"></button>
-      <button class="bg-red-700 w-1/2 h-4/5 mx-1 rounded-md"></button>
+    <footer
+      @click.stop
+      class="h-1/5 shaodw-lg flex items-center bg-gray-700 text-sm"
+      v-if="!New"
+    >
+      <button
+        class="bg-gray-900 w-1/2 text-blue-700 h-full mx-1 mb-2 rounded-md"
+      >
+        Something
+      </button>
+      <button
+        class="bg-gray-900 text-red-700 w-1/2 h-full mx-1 mb-2 rounded-md"
+        @click="$emit('delete')"
+      >
+        Something
+      </button>
     </footer>
   </div>
 </template>
 <script setup>
-import { defineProps } from "vue";
+import { defineProps, defineEmits } from "vue";
 
 const props = defineProps({
   header: String,
   New: Boolean,
 });
+
+const emits = defineEmits(["delete"]);
 </script>
 <style scoped></style>
