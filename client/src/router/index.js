@@ -6,6 +6,7 @@ import MainService from "/src/components/services/Main.vue";
 import MainEntity from "/src/components/entities/Main.vue";
 import MainFill from "/src/components/fill/Main.vue";
 import MainScan from "/src/components/scan/Main.vue";
+import MainTemplates from "/src/components/templates/Main.vue";
 
 const routes = [
   {
@@ -37,6 +38,11 @@ const routes = [
     path: "/scan",
     name: "Scan",
     component: MainScan,
+  },
+  {
+    path: "/templates",
+    name: "Templates",
+    component: MainTemplates,
   },
 ];
 

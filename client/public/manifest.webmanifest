@@ -1,0 +1,16 @@
+{
+  "name": "Accounting scanner",
+  "short_name": "AccScan",
+  "description": "A scanner application to help fill out accounting forms",
+  "icons": [
+    {
+      "src": "icons/logo-128.png",
+      "sizes": "256x256",
+      "type": "image/png"
+    }
+  ],
+  "start_url": "https://192.168.0.101:8080/scan",
+  "display": "fullscreen",
+  "theme_color": "#41B883",
+  "background_color": "#1F2937"
+}

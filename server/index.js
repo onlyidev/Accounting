@@ -7,8 +7,8 @@ const cors = require("cors");
 const app = express();
 const fs = require("fs");
 
-const privatekey = fs.readFileSync("./cert/key.pem");
-const cert = fs.readFileSync("./cert/cert.pem");
+const privatekey = fs.readFileSync("./cert/localhost.key");
+const cert = fs.readFileSync("./cert/localhost.crt");
 
 var creds = {
   key: privatekey,
@@ -22,9 +22,7 @@ const io = require("socket.io")(https, {
   cors: {
     origins: [
       "http://localhost:8080",
-      "http://192.168.0.57:8080",
       "https://localhost:8080",
-      "https://192.168.0.57:8080",
       "https://192.168.0.101:8080",
     ],
     methods: ["GET", "POST", "DELETE"],
@@ -36,6 +34,7 @@ const Post = require("./routes/api/posts");
 const Provider = require("./routes/api/providers");
 const Entity = require("./routes/api/entities");
 const Fill = require("./routes/api/fill");
+const Template = require("./routes/api/template");
 //End database
 
 app.use(bodyParser.json());
@@ -48,29 +47,34 @@ app.use("/", (req, res) => {
 });
 
 io.on("connection", (socket) => {
-  console.log(`User with id ${socket.id} has connected`);
+  try {
+    console.log(`User with id ${socket.id} has connected`);
 
-  if (io.sockets.connected)
-    socket.emit("connections", Object.keys(io.sockets.connected).length);
-  else socket.emit("connections", 0);
+    if (io.sockets.connected)
+      socket.emit("connections", Object.keys(io.sockets.connected).length);
+    else socket.emit("connections", 0);
 
-  socket.on("disconnect", () => {
-    console.log(`User with id ${socket.id} has disconnected`);
-  });
+    socket.on("disconnect", () => {
+      console.log(`User with id ${socket.id} has disconnected`);
+    });
 
-  socket.on("post", Post);
-  socket.on("provider", Provider);
-  socket.on("entity", Entity);
-  socket.on("fill", Fill);
+    socket.on("post", Post);
+    socket.on("provider", Provider);
+    socket.on("entity", Entity);
+    socket.on("fill", Fill);
+    socket.on("template", Template);
 
-  socket.on("scan:decode", (data) => {
-    io.to(data.client).emit("scan", data.fill);
-  });
+    socket.on("scan:decode", (data) => {
+      io.to(data.client).emit("scan", data.fill);
+    });
 
-  socket.on("scan:picture", (data, clb) => {
-    io.to(data.client).emit("picture", data);
-    return clb(data);
-  });
+    socket.on("scan:picture", (data, clb) => {
+      io.to(data.client).emit("picture", data);
+      return clb(data);
+    });
+  } catch (err) {
+    console.log(err);
+  }
 });
 
 // http.listen(port, () => {

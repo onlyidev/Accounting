@@ -1,9 +1,15 @@
 <template>
-  <div>
+  <div class="overflow-hidden">
     <video></video>
     <slot />
+    <div
+      v-show="offlineAlert"
+      class="border border-red-600 text-black bg-white text-lg rounded-md"
+    >
+      You are offline.
+    </div>
     <button
-      class="bg-yellow-500 rounded-md p-2 text-center"
+      class="bg-yellow-500 rounded-md p-2 text-center w-[5rem] h-[5rem]"
       @click="
         torch = !torch;
         init();
@@ -12,23 +18,30 @@
       Toggle torch
     </button>
     <button
-      class="bg-green-500 rounded-md p-2 text-center"
+      class="bg-green-500 rounded-md p-2 text-center w-[5rem] h-[5rem]"
       @click="takePicture"
     >
       Take a picture
     </button>
-    <button class="bg-red-500 rounded-md p-2" @click="endScan">End scan</button>
+    <button
+      class="bg-red-500 rounded-md p-2 w-[5rem] h-[5rem]"
+      @click="endScan"
+    >
+      End scan
+    </button>
+    <select v-model="tag.text" class="text-black">
+      <option
+        v-for="service in services"
+        :key="service._id"
+        :value="service._id"
+      >
+        {{ service.name }}
+      </option>
+    </select>
   </div>
 </template>
 <script setup>
-import {
-  onMounted,
-  ref,
-  defineEmits,
-  defineProps,
-  watch,
-  onUnmounted,
-} from "vue";
+import { onMounted, ref, defineEmits, defineProps, watch, toRefs } from "vue";
 
 let facing = "environment";
 let capture;
@@ -37,11 +50,25 @@ const torch = ref(false);
 const emit = defineEmits(["picture", "end"]);
 const props = defineProps({
   active: Boolean,
+  services: Array,
+  tag: Object,
 });
+
+const { services, tag } = toRefs(props);
+
+const offlineAlert = ref(false);
 
 onMounted(() => {
   init();
 });
+
+// addEventListener("offline", function () {
+//   this.offlineAlert.value = true;
+// });
+
+// addEventListener("online", function () {
+//   this.offlineAlert.value = false;
+// });
 
 watch(
   () => props.active,

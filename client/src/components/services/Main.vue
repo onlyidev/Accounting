@@ -54,12 +54,11 @@
         </div>
         <div class="w-full flex justify-between space-x-1">
           <span class="italic">Amount: </span>
-          <span
-            class="font-bold truncate"
-            :class="{ 'text-yellow-400': provider.ptype == 'diff' }"
-          >
+          <span class="font-bold truncate">
             {{
-              provider.ptype == "fixed" ? `${provider.price} Eur` : "waiting..."
+              provider.ptype == "fixed"
+                ? `${provider.price} Eur`
+                : `${provider.price} Eur/${provider.units}`
             }}
           </span>
         </div>

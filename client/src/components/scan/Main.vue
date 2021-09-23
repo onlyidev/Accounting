@@ -10,6 +10,8 @@
         fill.camera = false;
         fill.scan = true;
       "
+      :tag="tag"
+      :services="services"
     >
       <span v-if="fill.sending">Sending picture</span>
     </camera>
@@ -17,7 +19,7 @@
 </template>
 <script setup>
 import { QrStream } from "vue3-qr-reader";
-import { inject, ref } from "vue";
+import { inject, ref, onMounted, reactive } from "vue";
 import Camera from "./Camera.vue";
 
 const socket = inject("socket");
@@ -27,6 +29,26 @@ const cam = ref("auto");
 const fill = ref({ scan: true, camera: false });
 
 let qr = {};
+
+const tag = ref({ text: "" });
+const services = ref([]);
+
+onMounted(() => {
+  // fill.value = {
+  //   id: qr.fill,
+  //   scan: false,
+  //   camera: true,
+  // };
+  socket.emit(
+    "provider",
+    {
+      headers: "readall",
+    },
+    (resp) => {
+      services.value = resp;
+    }
+  );
+});
 
 function test(data) {
   qr = JSON.parse(data);
@@ -41,7 +63,7 @@ function test(data) {
 
 function sendPicture(blob) {
   fill.value.sending = true;
-  socket.emit("scan:picture", { ...qr, blob }, (resp) => {
+  socket.emit("scan:picture", { ...qr, blob, tag: tag.value.text }, (resp) => {
     fill.value.sending = false;
   });
 }

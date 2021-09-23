@@ -1,8 +1,22 @@
 <template>
   <div>
     <Navbar></Navbar>
+    <div
+      v-if="loading"
+      class="w-[100vw] h-[100vh] flex justify-center items-center bg-gray-800"
+    >
+      <!-- Loading animation -->
+      <atom-spinner />
+    </div>
     <router-view
-      class="bg-gray-800 min-h-[calc(100vh-3rem)] min-w-screen text-white"
+      v-else
+      class="
+        bg-gray-800
+        min-h-[calc(100vh-3rem)]
+        max-h-[calc(100vh-3rem)]
+        min-w-screen
+        text-white
+      "
     >
     </router-view>
     <TransitionRoot
@@ -46,10 +60,17 @@
 import Navbar from "./components/nav/Navbar.vue";
 import { TransitionRoot, TransitionChild } from "@headlessui/vue";
 import { CheckIcon } from "@heroicons/vue/solid";
+import AtomSpinner from "./components/animation/AtomSpinner.vue";
 
-import { ref } from "vue";
+import { ref, inject, onMounted } from "vue";
 
 const show = ref({ msg: "", visible: false });
+
+const loading = inject("loading");
+
+onMounted(() => {
+  console.log(loading);
+});
 
 function showMessage(msg) {
   show.value = {
@@ -81,5 +102,10 @@ window.addEventListener("update:generic", () => {
 <style>
 button {
   @apply active:scale-95 active:transition-transform active:duration-[50ms];
+}
+
+/* width */
+::-webkit-scrollbar {
+  @apply w-0;
 }
 </style>

@@ -86,7 +86,92 @@
                 />
                 <span class="text-black font-bold" step="0.01"> Eur/month</span>
               </p>
+              <div
+                v-else
+                class="
+                  space-y-1
+                  my-1
+                  w-full
+                  h-8
+                  self-start
+                  flex
+                  justify-start
+                  space-x-4
+                "
+              >
+                <label class="flex justify-start">
+                  Unit
+                  <input
+                    type="text"
+                    class="
+                      selector
+                      rounded-md
+                      h-full
+                      w-20
+                      outline-none
+                      focus:ring-0
+                      text-black
+                      font-bold
+                    "
+                    v-model="provider.units"
+                  />
+                </label>
+                <label class="flex justify-start">
+                  Price per unit
+                  <input
+                    type="number"
+                    class="
+                      rounded-md
+                      h-full
+                      w-20
+                      outline-none
+                      focus:ring-0
+                      text-black
+                      font-bold
+                    "
+                    v-model="provider.price"
+                  />
+                </label>
+                <label class="flex justify-start">
+                  Input count
+                  <input
+                    type="number"
+                    class="
+                      rounded-md
+                      h-full
+                      w-20
+                      outline-none
+                      focus:ring-0
+                      text-black
+                      font-bold
+                    "
+                    min="1"
+                    max="5"
+                    v-model="provider.inputs"
+                  />
+                </label>
+              </div>
             </div>
+
+            <div class="flex space-x-4">
+              <label class="flex items-center h-6">
+                Tag color:
+                <input
+                  type="color"
+                  class="h-full"
+                  v-model="provider.tagColor"
+                />
+              </label>
+              <label>
+                <input
+                  type="checkbox"
+                  true-value="#f54842"
+                  v-model="provider.tagColor"
+                />
+                Default color
+              </label>
+            </div>
+
             <div class="flex items-center gap-2">
               <span>Internal payment</span>
               <Switch

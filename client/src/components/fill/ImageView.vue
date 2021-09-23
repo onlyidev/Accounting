@@ -21,11 +21,13 @@
       class="relative h-1/4 overflow-hidden"
     >
       <img
-        :src="image"
+        :src="image.blob"
         class="max-h-full rounded-sm transition duration-300"
         :style="{ transform: `rotate(${effects[index]}deg)` }"
         @click="lightbox = { ...lightbox, index: index, visible: true }"
       />
+
+      <Tag :tag="taginfo[image.tag] ?? undefined" />
       <Controls
         class="z-10 inset-0"
         @rot-left="
@@ -44,7 +46,7 @@
     </div>
     <VueEasyLightbox
       :visible="lightbox.visible"
-      :imgs="images"
+      :imgs="computedModalImages"
       :index="lightbox.index"
       @hide="lightbox.visible = false"
     />
@@ -52,6 +54,7 @@
 </template>
 <script setup>
 import Controls from "./Controls.vue";
+import Tag from "./Tag.vue";
 import VueEasyLightbox from "vue-easy-lightbox";
 
 import {
@@ -61,7 +64,7 @@ import {
   toRefs,
   watch,
   defineEmits,
-  defineEmit,
+  computed,
 } from "vue";
 
 const props = defineProps({
@@ -77,6 +80,10 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
+  taginfo: {
+    type: Object,
+    default: undefined,
+  },
 });
 
 const emit = defineEmits(["remove"]);
@@ -89,6 +96,10 @@ const { blob, img, reset } = toRefs(props);
 
 onMounted(() => {
   convert(img.value);
+});
+
+const computedModalImages = computed(() => {
+  return images.value.map((item) => item.blob);
 });
 
 watch(
@@ -116,13 +127,20 @@ function convert(arr) {
 
 function imagesFromBlob(arr) {
   arr.forEach((item) => {
-    images.value.push(window.URL.createObjectURL(item));
+    images.value.push({
+      blob: window.URL.createObjectURL(item.blob ?? item),
+      tag: item.tag,
+    });
   });
 }
 
 function imagesFromBinary(arr) {
+  console.log(arr);
   arr.forEach((item) => {
-    images.value.push(`data:image/jpeg;base64,${item}`);
+    images.value.push({
+      blob: `data:image/jpeg;base64,${item.blob ?? item}`,
+      tag: item.tag,
+    });
   });
 }
 
