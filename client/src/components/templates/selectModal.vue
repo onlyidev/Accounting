@@ -150,6 +150,8 @@ function fillService(row) {
     "{{__service}}": "name",
     "{{unit_price}}": "price",
     "{{price}}": "compPrice",
+    "{{additional_price}}": "compAdd",
+    "{diff}}": "diff",
   };
   let cols = [];
 
@@ -160,6 +162,10 @@ function fillService(row) {
     .forEach((item) => {
       item.compPrice = compPrice(item);
       item.price = parseFloat(item.price);
+
+      item.diff = diff(item);
+      item.compAdd = compAdd(item);
+
       if (cols.length < 1)
         for (const rule in rules) {
           let num = row.find(rule)[0]?.columnNumber();
@@ -183,11 +189,23 @@ function fillService(row) {
 }
 
 function compPrice(service) {
-  if (service.ptype == "fixed") return parseFloat(service.price);
+  if (service.ptype == "fixed")
+    return parseFloat(service.price) / service.payers.length;
   return (
     ((arrSum(service.currMonth) - arrSum(service.prevMonth)) * service.price) /
     service.payers.length
   );
+}
+
+function compAdd(service) {
+  return service.additionalPayments / service.payers.length;
+}
+
+function diff(service) {
+  if (service.ptype == "fixed") return "-";
+  return `${Intl.NumberFormat("lt-LT", { maximumFractionDigits: 3 }).format(
+    arrSum(service.currMonth) - arrSum(service.prevMonth)
+  )} ${service.units}`;
 }
 </script>
 <style scoped>

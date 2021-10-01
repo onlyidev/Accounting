@@ -125,7 +125,7 @@ socket.on("template:updated", (data) => {
 });
 
 async function getFile(event, template) {
-  //Run secutiry checks **SKIP**
+  //Run security checks **SKIP**
 
   const sample = {
     file: await toBase64(event.target.files[0]),

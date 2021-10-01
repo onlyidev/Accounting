@@ -2,12 +2,6 @@
   <div class="overflow-hidden">
     <video></video>
     <slot />
-    <div
-      v-show="offlineAlert"
-      class="border border-red-600 text-black bg-white text-lg rounded-md"
-    >
-      You are offline.
-    </div>
     <button
       class="bg-yellow-500 rounded-md p-2 text-center w-[5rem] h-[5rem]"
       @click="

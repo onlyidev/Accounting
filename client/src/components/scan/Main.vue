@@ -1,5 +1,11 @@
 <template>
   <div class="flex justify-center items-center max-h-screen max-w-screen">
+    <div
+      v-if="offlineState"
+      class="rounded-md border border-black bg-white text-red-400 absolute z-20"
+    >
+      YOU ARE OFFLINE
+    </div>
     <qr-stream @decode="test" :camera="cam" v-if="fill.scan" />
     <camera
       v-if="fill.camera"
@@ -48,6 +54,16 @@ onMounted(() => {
       services.value = resp;
     }
   );
+});
+
+const offlineState = ref(false);
+
+addEventListener("offline", () => {
+  offlineState.value = true;
+});
+
+addEventListener("online", () => {
+  offlineState.value = false;
 });
 
 function test(data) {
