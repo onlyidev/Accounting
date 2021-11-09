@@ -1,0 +1,71 @@
+version: "3"
+services:
+  db:
+    image: mongo:latest
+    ports:
+      - 27017:27017
+    container_name: acc-mongo_db
+    volumes:
+      - ./db/data:/data/db
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME
+      - MONGO_INITDB_ROOT_PASSWORD
+      - MONGO_INITDB_DATABASE
+    networks:
+      - acc-net
+
+  admin:
+    image: mongo-express:latest
+    container_name: acc-database_admin
+    ports:
+      - 8081:8081
+    environment:
+      - ME_CONFIG_MONGODB_SERVER
+      - ME_CONFIG_MONGODB_PORT
+      - ME_CONFIG_MONGODB_ENABLE_ADMIN
+      - ME_CONFIG_MONGODB_AUTH_DATABASE
+      - ME_CONFIG_MONGODB_ADMINUSERNAME
+      - ME_CONFIG_MONGODB_ADMINPASSWORD
+      - ME_CONFIG_BASICAUTH_USERNAME
+      - ME_CONFIG_BASICAUTH_PASSWORD
+    networks:
+      - acc-net
+    depends_on:
+      - db
+    restart: unless-stopped
+    profiles:
+      - admin
+
+  server:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    volumes:
+      - ./server:/usr/src/app
+    ports:
+      - 5000:5000
+    container_name: acc-server
+    networks:
+      - acc-net
+    depends_on:
+      - db
+    restart: unless-stopped
+
+  client:
+    container_name: acc-vuejs
+    ports:
+      - 8080:8080
+    volumes:
+      - ./client:/app
+    networks:
+      - acc-net
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    profiles:
+      - production
+
+networks:
+  acc-net:
+    driver: bridge
